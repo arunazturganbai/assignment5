@@ -6,11 +6,11 @@ public class BST<K extends Comparable<K>, V> implements Iterable<BST.Entry<K, V>
     private Node root;
     private int size;
 
-    public class Node {
+    private static class Node<K, V> {
         private K key;
         private V val;
-        private Node left;
-        private Node right;
+        private Node<K, V> left;
+        private Node<K, V> right;
 
         public Node(K key, V val) {
             this.key = key;
@@ -22,10 +22,10 @@ public class BST<K extends Comparable<K>, V> implements Iterable<BST.Entry<K, V>
         root = put(root, key, val);
     }
 
-    private Node put(Node node, K key, V val) {
+    private Node<K, V> put(Node<K, V> node, K key, V val) {
         if (node == null) {
             size++;
-            return new Node(key, val);
+            return new Node<>(key, val);
         }
 
         int cmp = key.compareTo(node.key);
@@ -38,26 +38,6 @@ public class BST<K extends Comparable<K>, V> implements Iterable<BST.Entry<K, V>
         }
 
         return node;
-    }
-
-    public V get(K key) {
-        Node node = get(root, key);
-        return node != null ? node.val : null;
-    }
-
-    private Node get(Node node, K key) {
-        if (node == null) {
-            return null;
-        }
-
-        int cmp = key.compareTo(node.key);
-        if (cmp < 0) {
-            return get(node.left, key);
-        } else if (cmp > 0) {
-            return get(node.right, key);
-        } else {
-            return node;
-        }
     }
 
     public void delete(K key) {
@@ -117,32 +97,37 @@ public class BST<K extends Comparable<K>, V> implements Iterable<BST.Entry<K, V>
     }
 
     private class BSTIterator implements Iterator<Entry<K, V>> {
-        private Node currentNode;
         private Stack<Node> stack;
 
         public BSTIterator() {
-            currentNode = root;
             stack = new Stack<>();
+            pushLeft(root);
         }
 
         public boolean hasNext() {
-            return currentNode != null || !stack.isEmpty();
+            return !stack.isEmpty();
         }
 
         public Entry<K, V> next() {
-            while (currentNode != null) {
-                stack.push(currentNode);
-                currentNode = currentNode.left;
-            }
-
-            if (stack.isEmpty()) {
+            if (!hasNext()) {
                 throw new NoSuchElementException();
             }
 
             Node node = stack.pop();
-            currentNode = node.right;
+            Entry<K, V> entry = new Entry<>(node.key, node.val);
 
-            return new Entry<>(node.key, node.val);
+            if (node.right != null) {
+                pushLeft(node.right);
+            }
+
+            return entry;
+        }
+
+        private void pushLeft(Node node) {
+            while (node != null) {
+                stack.push(node);
+                node = node.left;
+            }
         }
     }
 
@@ -163,17 +148,4 @@ public class BST<K extends Comparable<K>, V> implements Iterable<BST.Entry<K, V>
             return value;
         }
     }
-    BST<Integer, String> tree = new BST<>();
-    tree.put(5, "Value 5");
-        tree.put(3, "Value 3");
-        tree.put(7, "Value 7");
-
-        for (BST.Entry<Integer, String> entry : tree) {
-        BST.Node node = (BST.Node) entry;
-        System.out.println("Key is " + node.key + " and Value is " + node.val);
-    }
 }
-
-
-
-
