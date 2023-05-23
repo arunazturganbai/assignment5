@@ -49,7 +49,7 @@ public class BST<K extends Comparable<K>, V> implements Iterable<BST.Entry<K, V>
             return null;
         }
 
-        int cmp = key.compareTo(node.key);
+        int cmp = key.compareTo((K) node.key);
         if (cmp < 0) {
             node.left = delete(node.left, key);
         } else if (cmp > 0) {
@@ -148,7 +148,7 @@ public class BST<K extends Comparable<K>, V> implements Iterable<BST.Entry<K, V>
             return value;
         }
     }
-    public class Count(K key, V value){
+    public final class Count(K key, V value){
         private K key;
         private V value;
 
@@ -160,7 +160,7 @@ public class BST<K extends Comparable<K>, V> implements Iterable<BST.Entry<K, V>
             return key;
         }
 
-        public V getvalue(){
+        public V getvalue() {
             return value;
         }
     }
