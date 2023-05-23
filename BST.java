@@ -148,4 +148,20 @@ public class BST<K extends Comparable<K>, V> implements Iterable<BST.Entry<K, V>
             return value;
         }
     }
+    public class Count(K key, V value){
+        private K key;
+        private V value;
+
+        public Count(K key, V value){
+            this.key = key;
+            this.value = value;
+        }
+        public K getkey(){
+            return key;
+        }
+
+        public V getvalue(){
+            return value;
+        }
+    }
 }
